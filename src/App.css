@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+    display: flex;
+    flex-direction: column;
+    transition: all 5.5s ease-in-out !important;
+}
+
+.font-Montserrat {
+    font-family: 'Montserrat';
+}
+
+.container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.jumbotron div>a:hover {
+    text-decoration: underline !important;
+}
+
+.jumbotron div>a:active {
+    color: initial;
+}
+
+
+.submit_btn:hover {
+    background-color: rgba(222, 10, 10, 1) !important;
+    color: white !important;
+}
+
+.submit_btn:disabled:hover {
+    background-color: initial !important;
+    color: rgba(222, 10, 10, 1) !important;
+
+}
+
+.submit_btn:focus {
+    background-color: rgba(222, 10, 10, 1) !important;
+    color: white !important;
+    box-shadow: 0px 0px 3px 4px rgba(222, 10, 10, 0.45);
+}
+
+.urlInput:focus {
+    outline: none;
+    box-shadow: 0px 0px 3px 4px rgba(29, 183, 255, 0.45);
+    transition: all 0.4s;
+}
+
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.itemCard a:hover {
+    background: rgb(30, 106, 229) !important;
+    transition: all 0.2s;
+}
+
+.itemCard a:focus {
+    box-shadow: 0px 0px 3px 4px rgba(60, 157, 255, 0.571);
+    transition: all 0.2s;
+}
+
+@keyframes grow {
+    0% {
+        opacity: 0;
+        transform: scale(0%);
+    }
+
+    100% {
+        opacity: 90%;
+        transform: scale(100%);
+    }
+}
+
+@keyframes toOpacity1 {
+    to {
+        opacity: 1;
+        transform: translateY(-20px);
+    }
+}
+
+
+
+@media (min-width: 576px) {
+    .container {
+        max-width: 540px;
+    }
+
+    header div:first-child {
+        display: none;
+    }
+
+    .itemCard {
+        max-width: 100%;
+        flex: 0 0 100%;
+
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 720px;
+    }
+
+    .itemCard {
+        max-width: 50%;
+        flex: 0 0 50%;
+
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        max-width: 960px;
+    }
+
+    .itemCard {
+        max-width: 33.333333%;
+        flex: 0 0 33.333333%;
+    }
+}
