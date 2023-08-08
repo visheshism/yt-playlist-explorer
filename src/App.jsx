@@ -114,17 +114,17 @@ function App() {
         {(state === "initial") && <Welcome state={state} />}
         {(state === "error") && <Error />}
 
-        <PlaylistInfoComp playlistInfo={playlistInfo} />
+        {Object.keys(playlistInfo).length > 0 && (<PlaylistInfoComponent playlistInfo={playlistInfo} />)}
 
 
-        <div style={{
+        {data.length > 0 && (<div style={{
           display: 'flex',
           marginTop: '10px', marginBottom: '10px',
           marginLeft: '-15px', marginRight: '-15px',
           flexWrap: 'wrap'
         }}>
           {data.map(i => (<ItemCard Item={i} key={i.videoId + i.position} />))}
-        </div>
+        </div>)}
 
       </div>
     </>
