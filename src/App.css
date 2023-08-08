@@ -91,15 +91,16 @@ body {
     }
 }
 
+@media (max-width: 576px) {
+    header div:first-child {
+        display: none;
+    }
 
+}
 
 @media (min-width: 576px) {
     .container {
         max-width: 540px;
-    }
-
-    header div:first-child {
-        display: none;
     }
 
     .itemCard {
