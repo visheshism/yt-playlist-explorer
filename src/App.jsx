@@ -114,7 +114,7 @@ function App() {
         {(state === "initial") && <Welcome state={state} />}
         {(state === "error") && <Error />}
 
-        {Object.keys(playlistInfo).length > 0 && (<PlaylistInfoComponent playlistInfo={playlistInfo} />)}
+        {Object.keys(playlistInfo).length > 0 && (<PlaylistInfoComp playlistInfo={playlistInfo} />)}
 
 
         {data.length > 0 && (<div style={{
