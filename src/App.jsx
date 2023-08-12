@@ -156,7 +156,7 @@ const InputComponent = ({ inputUrl, submitHandler, setInputUrl, isLoading, isPla
       value={inputUrl}
     />
     <button className='submit_btn' style={{ padding: '8px', background: 'none', border: '1.5px rgba(222, 10, 10, 1) solid', borderTopRightRadius: '4px', borderBottomRightRadius: '4px', color: 'rgba(222, 10, 10, 1)', fontSize: '15px', letterSpacing: '0.5px', transition: 'all 0.2s' }} onClick={submitHandler}
-      disabled={(!playlistIdRegExp.test(inputUrl) && (!inputUrl.includes("youtube.com/playlist?list=") || !inputUrl.split('youtube.com/playlist?list=')[1])) || isLoading}
+      disabled={(!isPlaylistId && (!inputUrl.includes("youtube.com/playlist?list=") || !inputUrl.split('youtube.com/playlist?list=')[1])) || isLoading}
     >Go</button>
 
   </section>
