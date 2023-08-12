@@ -3,7 +3,7 @@ import React from 'react'
 const Welcome = () => {
 
     return (
-        <div className='jumbotron anim-default' style={{ backgroundColor: 'rgba(98, 222, 143, 0.3)', color: 'rgba(0, 57, 21, 0.9)', borderRadius: '6px', padding: '20px 20px', marginTop: '40px' }}>
+        <div className='jumbotron' style={{ backgroundColor: 'rgba(98, 222, 143, 0.3)', color: 'rgba(0, 57, 21, 0.9)', borderRadius: '6px', padding: '20px 20px', opacity: 0, animation: 'toOpacity1 2s forwards', marginTop: '40px', width: '100%' }}>
             <h3 className='font-Montserrat' style={{ fontSize: '24px', fontWeight: 550, letterSpacing: "1.2px", textAlign: 'center' }}>Hey!</h3>
             <p style={{ textAlign: 'center', fontFamily: 'sans-serif', letterSpacing: '0.7px' }}>This app helps you to calculate the total duration of a YouTube playlist.
             </p>
