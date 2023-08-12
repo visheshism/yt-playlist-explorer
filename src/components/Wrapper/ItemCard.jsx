@@ -3,7 +3,7 @@ import { getTimeString } from "../../utils/timeConversion"
 const ItemCard = ({ Item: { title, description, duration = 0, videoId, position: idx, image = '/img/not-found.2056c908.png' } }) => {
 
     return (<article className='itemCard' style={{
-        paddingLeft: '15px', paddingRight: '15px', marginTop: '3rem'
+        paddingLeft: '15px', paddingRight: '15px', marginTop: '3rem', maxWidth: '100%', flex: '0 0 100%'
     }}>
         <div style={{ border: '1px rgba(128,128,128,0.3) solid', borderRadius: '6px', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
 
@@ -15,7 +15,7 @@ const ItemCard = ({ Item: { title, description, duration = 0, videoId, position:
                     {!isNaN(idx) ? idx + 1 + '.' : ''} {title}
                 </h3>
 
-                <h4 className='font-Montserrat' style={{ color: 'rgba(128,128,128,1)', fontWeight: 550, letterSpacing: '0.6px', margin: 0, margin: '6px 0', fontSize: '14px' }}>{getTimeString(duration)}</h4>
+                <h4 className='font-Montserrat' style={{ color: 'rgba(128,128,128,1)', fontWeight: 550, letterSpacing: '0.6px', margin: 0, margin: '6px 0', fontSize: '14px' }}>{duration > 0 || ['Deleted video', 'Private video'].includes(title) ? getTimeString(duration) : 'Calculating duration...'}</h4>
 
                 <p className='text-truncate' style={{ width: '100%', margin: '10px 0', fontFamily: 'sans-serif', letterSpacing: '0.5px', marginBottom: '20px' }}>{description}</p>
 

@@ -144,7 +144,7 @@ function App() {
 
 const InputComponent = ({ inputUrl, submitHandler, setInputUrl, isLoading }) => (<>
   <div style={{ borderTop: '1px solid rgba(128,128,128,0.5)' }}></div>
-  <section style={{ display: "grid", width: '100%', gridTemplateColumns: '8% 1fr 8%', padding: '50px 0' }}>
+  <section style={{ display: "grid", width: '100%', gridTemplateColumns: '14% 1fr 12%', padding: '50px 0' }}>
     <button style={{ padding: '8px', background: 'rgba(128,128,128,0.16)', border: '1.5px rgba(128,128,128,0.2) solid', borderTopLeftRadius: '4px', borderBottomLeftRadius: '4px', color: 'rgba(79, 77, 77, 1)', fontSize: '15px', letterSpacing: '0.5px' }} >URL</button>
     <input type="url" className='urlInput' name="" id="" style={{ fontSize: '15px', letterSpacing: '0.7px', color: 'rgba(79, 77, 77, 1)', padding: '8px 10px', border: '1px rgba(128,128,128,0.5) solid' }}
       placeholder='https://www.youtube.com/playlist?list=PLMC9KNkIncKtGvr2kFRuXBVmBev6cAJ2u'
