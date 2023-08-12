@@ -3,7 +3,7 @@ import { getTimeString } from "../../utils/timeConversion"
 const ItemCard = ({ Item: { title, description, duration = 0, videoId, position: idx, image = '/img/not-found.2056c908.png' } }) => {
 
     return (<article className='itemCard' style={{
-        paddingLeft: '15px', paddingRight: '15px', width: '100%', marginTop: '3rem'
+        paddingLeft: '15px', paddingRight: '15px', marginTop: '3rem'
     }}>
         <div style={{ border: '1px rgba(128,128,128,0.3) solid', borderRadius: '6px', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
 

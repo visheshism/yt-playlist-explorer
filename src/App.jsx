@@ -97,7 +97,13 @@ function App() {
 
   return (
     <>
-      <div className="container">
+      <div className="container" style={{
+        width: '100%',
+        paddingRight: '15px',
+        paddingLeft: '15px',
+        marginRight: 'auto',
+        marginLeft: 'auto'
+      }}>
 
         <Header />
         <InputComponent inputUrl={inputUrl} submitHandler={submitHandler} setInputUrl={setInputUrl} isLoading={isLoading} />
@@ -107,24 +113,28 @@ function App() {
           {(isLoading || processingDuration) && <Loader />}
           {totalDuration > 0 && <TotalDurationComp totalDuration={totalDuration} />}
 
+
+          {totalDuration > 0 && (<div style={{ borderTop: '1px solid rgba(128,128,128,0.5)', marginBottom: '20px', width: '100%' }}></div>)}
+
+          {(state === "initial") && <Welcome />}
+          {(state === "error") && <Error />}
+
+          {Object.keys(playlistInfo).length > 0 && (<PlaylistInfoComp playlistInfo={playlistInfo} classes={['anim-default']} />)}
+
+
+          {data.length > 0 && (<div style={{
+            display: 'flex',
+            marginTop: '10px', marginBottom: '10px',
+            marginLeft: '-15px', marginRight: '-15px',
+            flexWrap: 'wrap', width: '100%', animationDelay: '0.3s'
+            }} className='anim-default'>
+            {data.map(i => (<ItemCard Item={i} key={i.videoId + i.position} />))}
+          </div>)}
+
+
         </main>
 
-        {totalDuration > 0 && (<div style={{ borderTop: '1px solid rgba(128,128,128,0.5)' }}></div>)}
 
-        {(state === "initial") && <Welcome state={state} />}
-        {(state === "error") && <Error />}
-
-        {Object.keys(playlistInfo).length > 0 && (<PlaylistInfoComp playlistInfo={playlistInfo} />)}
-
-
-        {data.length > 0 && (<div style={{
-          display: 'flex',
-          marginTop: '10px', marginBottom: '10px',
-          marginLeft: '-15px', marginRight: '-15px',
-          flexWrap: 'wrap'
-        }}>
-          {data.map(i => (<ItemCard Item={i} key={i.videoId + i.position} />))}
-        </div>)}
 
       </div>
     </>
