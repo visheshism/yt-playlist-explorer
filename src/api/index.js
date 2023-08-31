@@ -11,7 +11,7 @@ export const getPlaylistInfo = async (PlaylistId) => {
         const response = await Axios.get(url)
         const { data: { items: [{ snippet: { title, description } }] } } = response
 
-        return { title, description }
+        return { title, description, playlistId: PlaylistId }
     } catch (error) {
         return {}
     }
