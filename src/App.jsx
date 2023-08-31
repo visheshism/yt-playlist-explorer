@@ -128,7 +128,7 @@ function App() {
             marginLeft: '-15px', marginRight: '-15px',
             flexWrap: 'wrap', width: '100%', animationDelay: '0.3s'
             }} className='anim-default'>
-            {data.map(i => (<ItemCard Item={i} key={i.videoId + i.position} />))}
+            {data.map(i => (<ItemCard Item={i} key={i.videoId + i.position} playlistId={playlistInfo.playlistId} />))}
           </div>)}
 
 
