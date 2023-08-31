@@ -1,6 +1,6 @@
 import { getTimeString } from "../../utils/timeConversion"
 
-const ItemCard = ({ Item: { title, description, duration = 0, videoId, position: idx, image = '/img/not-found.2056c908.png' } }) => {
+const ItemCard = ({ playlistId, Item: { title, description, duration = 0, videoId, position: idx, image = '/img/not-found.2056c908.png' } }) => {
 
     return (<article className='itemCard' style={{
         paddingLeft: '15px', paddingRight: '15px', marginTop: '3rem', maxWidth: '100%', flex: '0 0 100%'
@@ -19,7 +19,7 @@ const ItemCard = ({ Item: { title, description, duration = 0, videoId, position:
 
                 <p className='text-truncate' style={{ width: '100%', margin: '10px 0', fontFamily: 'sans-serif', letterSpacing: '0.5px', marginBottom: '20px' }}>{description}</p>
 
-                <a href={`https://youtube.com/watch?v=${videoId}`} style={{ padding: '10px', borderRadius: '4px', border: 'none', background: 'rgba(54, 130, 233, 1)', color: 'white', fontFamily: 'sans-serif', letterSpacing: '0.8px', textDecoration: 'none' }} target="__blank">Watch Video</a>
+                <a href={`https://youtube.com/watch?v=${videoId}&list=${playlistId}`} style={{ padding: '10px', borderRadius: '4px', border: 'none', background: 'rgba(54, 130, 233, 1)', color: 'white', fontFamily: 'sans-serif', letterSpacing: '0.8px', textDecoration: 'none' }} target="__blank">Watch Video</a>
 
             </div>
 
