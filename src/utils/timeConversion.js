@@ -1,10 +1,10 @@
 export const iso8601ToTime = (duration) => {
-  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  const match = duration.match(/P(?:([\d.]+)D)?T(?:([\d.]+)H)?(?:([\d.]+)M)?(?:([\d.]+)S)?/);
 
   if (duration.length) {
-    const [hours, minutes, seconds] = [match[1] ? parseInt(match[1]) : 0, match[2] ? parseInt(match[2]) : 0, match[3] ? parseInt(match[3]) : 0]
+    const [days, hours, minutes, seconds] = [parseInt(match[1] ?? 0), parseInt(match[2] ?? 0), parseInt(match[3] ?? 0), parseInt(match[4] ?? 0)]
 
-    return seconds + (minutes * 60) + (hours * 60 * 60)
+    return seconds + (minutes * 60) + (hours * 60 * 60) + (days * 24 * 60 * 60)
   }
   return 0
 }
