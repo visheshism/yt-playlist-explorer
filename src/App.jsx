@@ -22,6 +22,8 @@ function App() {
   const playlistIdRegExp = /^[a-zA-Z0-9_-]{12,}$/
   const isPlaylistId = playlistIdRegExp.test(inputUrl)
 
+  const isInvalidUrl = (!inputUrl.includes("https://youtube.com/playlist?list=") && !inputUrl.includes("https://www.youtube.com/playlist?list=") && !inputUrl.includes("www.youtube.com/playlist?list=")) || !inputUrl.split('youtube.com/playlist?list=')[1]
+
   const getData = async (url, nextPage) => {
 
     if (isPlaylistId) url = `https://youtube.com/playlist?list=${inputUrl}`
@@ -110,7 +112,7 @@ function App() {
       }}>
 
         <Header />
-        <InputComponent inputUrl={inputUrl} submitHandler={submitHandler} setInputUrl={setInputUrl} isLoading={isLoading} isPlaylistId={isPlaylistId} />
+        <InputComponent inputUrl={inputUrl} submitHandler={submitHandler} setInputUrl={setInputUrl} isLoading={isLoading} isPlaylistId={isPlaylistId} isInvalidUrl={isInvalidUrl} />
 
         <main style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
@@ -121,6 +123,8 @@ function App() {
           {totalDuration > 0 && (<div style={{ borderTop: '1px solid rgba(128,128,128,0.5)', marginBottom: '20px', width: '100%' }}></div>)}
 
           {(state === "initial") && <Welcome />}
+
+
           {(state === "error") && <Error isPlaylistId={isPlaylistId} />}
 
           {Object.keys(playlistInfo).length > 0 && (<PlaylistInfoComp playlistInfo={playlistInfo} classes={['anim-default']} />)}
@@ -131,7 +135,7 @@ function App() {
             marginTop: '10px', marginBottom: '10px',
             marginLeft: '-15px', marginRight: '-15px',
             flexWrap: 'wrap', width: '100%', animationDelay: '0.3s'
-            }} className='anim-default'>
+          }} className='anim-default'>
             {data.map(i => (<ItemCard Item={i} key={i.videoId + i.position} playlistId={playlistInfo.playlistId} />))}
           </div>)}
 
@@ -146,17 +150,17 @@ function App() {
 }
 
 
-const InputComponent = ({ inputUrl, submitHandler, setInputUrl, isLoading, isPlaylistId }) => (<>
+const InputComponent = ({ inputUrl, submitHandler, setInputUrl, isLoading, isPlaylistId, isInvalidUrl }) => (<>
   <div style={{ borderTop: '1px solid rgba(128,128,128,0.5)' }}></div>
   <section style={{ display: "grid", width: '100%', gridTemplateColumns: '14% 1fr 12%', padding: '50px 0' }}>
-    <button style={{ padding: '8px', background: 'rgba(128,128,128,0.16)', border: '1.5px rgba(128,128,128,0.2) solid', borderTopLeftRadius: '4px', borderBottomLeftRadius: '4px', color: 'rgba(79, 77, 77, 1)', fontSize: '15px', letterSpacing: '0.5px' }} >{isPlaylistId ? "ID" : "URL"}</button>
+    <button style={{ padding: '8px', background: 'rgba(128,128,128,0.16)', border: '1.5px rgba(128,128,128,0.2) solid', borderTopLeftRadius: '4px', borderBottomLeftRadius: '4px', color: 'rgba(79, 77, 77, 1)', fontSize: '15px', letterSpacing: '0.5px' }} >{inputUrl.length === 0 ? "URL" : isPlaylistId ? "ID" : isInvalidUrl ? "INVALID" : "URL"}</button>
     <input type="url" className='urlInput' name="" id="" style={{ fontSize: '15px', letterSpacing: '0.7px', color: 'rgba(79, 77, 77, 1)', padding: '8px 10px', border: '1px rgba(128,128,128,0.5) solid' }}
       placeholder='Enter Playlist ID / URL'
       onChange={(e) => setInputUrl(e.target.value.trim())} spellCheck="false" autoComplete="off"
       value={inputUrl}
     />
     <button className='submit_btn' style={{ padding: '8px', background: 'none', border: '1.5px rgba(222, 10, 10, 1) solid', borderTopRightRadius: '4px', borderBottomRightRadius: '4px', color: 'rgba(222, 10, 10, 1)', fontSize: '15px', letterSpacing: '0.5px', transition: 'all 0.2s' }} onClick={submitHandler}
-      disabled={(!isPlaylistId && (!inputUrl.includes("youtube.com/playlist?list=") || !inputUrl.split('youtube.com/playlist?list=')[1])) || isLoading}
+      disabled={((!isPlaylistId && isInvalidUrl) || isLoading)}
     >Go</button>
 
   </section>
