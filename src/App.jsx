@@ -8,10 +8,16 @@ import PlaylistInfoComp from './components/Wrapper/PlaylistInfo';
 import ItemCard from './components/Wrapper/ItemCard';
 import TotalDurationComp from './components/Wrapper/TotalDuration';
 import Loader from './components/Loader';
-
+import { useSearchParams } from 'react-router-dom';
 
 function App() {
-  const [inputUrl, setInputUrl] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const paramId = searchParams.get("id")
+  const paramUrl = searchParams.get("url")
+  const validReq = paramId || paramUrl
+
+  const [inputUrl, setInputUrl] = useState((paramId || paramUrl) ?? '');
   const [playlistInfo, setPlaylistInfo] = useState({})
   const [data, setData] = useState([]);
   const [processingDuration, setProcessingDuration] = useState(false)
@@ -57,17 +63,20 @@ function App() {
     }
   }
 
-  const submitHandler = () => {
+  const submitHandler = () => setSearchParams({ [isPlaylistId ? "id" : "url"]: inputUrl })
 
-    setIsLoading(true)
-    setProcessingDuration(false)
-    setstate('fetching')
+  const processRequest = () => {
+    if (validReq) {
+      setIsLoading(true)
+      setProcessingDuration(false)
+      setstate('fetching')
 
-    setPlaylistInfo({})
-    setData([]);
-    setTotalDuration(0)
+      setPlaylistInfo({})
+      setData([]);
+      setTotalDuration(0)
 
-    getData(inputUrl)
+      getData(inputUrl)
+    }
   }
 
   useEffect(() => {
@@ -101,6 +110,10 @@ function App() {
     }
   }, [state])
 
+  useEffect(() => {
+    processRequest()
+  }, [searchParams.get("id"), searchParams.get("url")])
+
   return (
     <>
       <div className="container" style={{
@@ -117,28 +130,34 @@ function App() {
         <main style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
           {(isLoading || processingDuration) && <Loader />}
-          {totalDuration > 0 && <TotalDurationComp totalDuration={totalDuration} />}
-
-
-          {totalDuration > 0 && (<div style={{ borderTop: '1px solid rgba(128,128,128,0.5)', marginBottom: '20px', width: '100%' }}></div>)}
+          {validReq &&
+            (<>
+              {totalDuration > 0 && <TotalDurationComp totalDuration={totalDuration} />}
+              
+              {totalDuration > 0 && (<div style={{ borderTop: '1px solid rgba(128,128,128,0.5)', marginBottom: '20px', width: '100%' }}></div>)}
+            </>)
+          }
 
           {(state === "initial") && <Welcome />}
 
+          {validReq && (<>
 
-          {(state === "error") && <Error isPlaylistId={isPlaylistId} />}
+            {(state === "error") && <Error isPlaylistId={isPlaylistId} />}
 
-          {Object.keys(playlistInfo).length > 0 && (<PlaylistInfoComp playlistInfo={playlistInfo} classes={['anim-default']} />)}
+            {Object.keys(playlistInfo).length > 0 && (<PlaylistInfoComp playlistInfo={playlistInfo} classes={['anim-default']} />)}
 
 
-          {data.length > 0 && (<div style={{
-            display: 'flex',
-            marginTop: '10px', marginBottom: '10px',
-            marginLeft: '-15px', marginRight: '-15px',
-            flexWrap: 'wrap', width: '100%', animationDelay: '0.3s'
-          }} className='anim-default'>
-            {data.map(i => (<ItemCard Item={i} key={i.videoId + i.position} playlistId={playlistInfo.playlistId} />))}
-          </div>)}
+            {data.length > 0 && (<div style={{
+              display: 'flex',
+              marginTop: '10px', marginBottom: '10px',
+              marginLeft: '-15px', marginRight: '-15px',
+              flexWrap: 'wrap', width: '100%', animationDelay: '0.3s'
+            }} className='anim-default'>
+              {data.map(i => (<ItemCard Item={i} key={i.videoId + i.position} playlistId={playlistInfo.playlistId} />))}
+            </div>)}
 
+          </>
+          )}
 
         </main>
 
