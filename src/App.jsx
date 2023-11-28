@@ -8,10 +8,16 @@ import PlaylistInfoComp from './components/Wrapper/PlaylistInfo';
 import ItemCard from './components/Wrapper/ItemCard';
 import TotalDurationComp from './components/Wrapper/TotalDuration';
 import Loader from './components/Loader';
-
+import { useSearchParams } from 'react-router-dom';
 
 function App() {
-  const [inputUrl, setInputUrl] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const paramId = searchParams.get("id")
+  const paramUrl = searchParams.get("url")
+  const validReq = paramId || paramUrl
+
+  const [inputUrl, setInputUrl] = useState((paramId || paramUrl) ?? '');
   const [playlistInfo, setPlaylistInfo] = useState({})
   const [data, setData] = useState([]);
   const [processingDuration, setProcessingDuration] = useState(false)
@@ -19,8 +25,14 @@ function App() {
   const [isLoading, setIsLoading] = useState(false)
   const [state, setstate] = useState('initial')
 
+  const playlistIdRegExp = /^[a-zA-Z0-9_-]{12,}$/
+  const isPlaylistId = playlistIdRegExp.test(inputUrl)
+
+  const isInvalidUrl = (!inputUrl.includes("https://youtube.com/playlist?list=") && !inputUrl.includes("https://www.youtube.com/playlist?list=") && !inputUrl.includes("www.youtube.com/playlist?list=")) || !inputUrl.split('youtube.com/playlist?list=')[1]
 
   const getData = async (url, nextPage) => {
+
+    if (isPlaylistId) url = `https://youtube.com/playlist?list=${inputUrl}`
 
     const searchParams = new URLSearchParams(url.split('?')[1])
     const playListId = searchParams.get('list');
@@ -51,17 +63,20 @@ function App() {
     }
   }
 
-  const submitHandler = () => {
+  const submitHandler = () => setSearchParams({ [isPlaylistId ? "id" : "url"]: inputUrl })
 
-    setIsLoading(true)
-    setProcessingDuration(false)
-    setstate('fetching')
+  const processRequest = () => {
+    if (validReq) {
+      setIsLoading(true)
+      setProcessingDuration(false)
+      setstate('fetching')
 
-    setPlaylistInfo({})
-    setData([]);
-    setTotalDuration(0)
+      setPlaylistInfo({})
+      setData([]);
+      setTotalDuration(0)
 
-    getData(inputUrl)
+      getData(inputUrl)
+    }
   }
 
   useEffect(() => {
@@ -95,6 +110,10 @@ function App() {
     }
   }, [state])
 
+  useEffect(() => {
+    processRequest()
+  }, [searchParams.get("id"), searchParams.get("url")])
+
   return (
     <>
       <div className="container" style={{
@@ -106,31 +125,39 @@ function App() {
       }}>
 
         <Header />
-        <InputComponent inputUrl={inputUrl} submitHandler={submitHandler} setInputUrl={setInputUrl} isLoading={isLoading} />
+        <InputComponent inputUrl={inputUrl} submitHandler={submitHandler} setInputUrl={setInputUrl} isLoading={isLoading} isPlaylistId={isPlaylistId} isInvalidUrl={isInvalidUrl} />
 
         <main style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
           {(isLoading || processingDuration) && <Loader />}
-          {totalDuration > 0 && <TotalDurationComp totalDuration={totalDuration} />}
-
-
-          {totalDuration > 0 && (<div style={{ borderTop: '1px solid rgba(128,128,128,0.5)', marginBottom: '20px', width: '100%' }}></div>)}
+          {validReq &&
+            (<>
+              {totalDuration > 0 && <TotalDurationComp totalDuration={totalDuration} />}
+              
+              {totalDuration > 0 && (<div style={{ borderTop: '1px solid rgba(128,128,128,0.5)', marginBottom: '20px', width: '100%' }}></div>)}
+            </>)
+          }
 
           {(state === "initial") && <Welcome />}
-          {(state === "error") && <Error />}
 
-          {Object.keys(playlistInfo).length > 0 && (<PlaylistInfoComp playlistInfo={playlistInfo} classes={['anim-default']} />)}
+          {validReq && (<>
+
+            {(state === "error") && <Error isPlaylistId={isPlaylistId} />}
+
+            {Object.keys(playlistInfo).length > 0 && (<PlaylistInfoComp playlistInfo={playlistInfo} classes={['anim-default']} />)}
 
 
-          {data.length > 0 && (<div style={{
-            display: 'flex',
-            marginTop: '10px', marginBottom: '10px',
-            marginLeft: '-15px', marginRight: '-15px',
-            flexWrap: 'wrap', width: '100%', animationDelay: '0.3s'
+            {data.length > 0 && (<div style={{
+              display: 'flex',
+              marginTop: '10px', marginBottom: '10px',
+              marginLeft: '-15px', marginRight: '-15px',
+              flexWrap: 'wrap', width: '100%', animationDelay: '0.3s'
             }} className='anim-default'>
-            {data.map(i => (<ItemCard Item={i} key={i.videoId + i.position} playlistId={playlistInfo.playlistId} />))}
-          </div>)}
+              {data.map(i => (<ItemCard Item={i} key={i.videoId + i.position} playlistId={playlistInfo.playlistId} />))}
+            </div>)}
 
+          </>
+          )}
 
         </main>
 
@@ -142,17 +169,17 @@ function App() {
 }
 
 
-const InputComponent = ({ inputUrl, submitHandler, setInputUrl, isLoading }) => (<>
+const InputComponent = ({ inputUrl, submitHandler, setInputUrl, isLoading, isPlaylistId, isInvalidUrl }) => (<>
   <div style={{ borderTop: '1px solid rgba(128,128,128,0.5)' }}></div>
   <section style={{ display: "grid", width: '100%', gridTemplateColumns: '14% 1fr 12%', padding: '50px 0' }}>
-    <button style={{ padding: '8px', background: 'rgba(128,128,128,0.16)', border: '1.5px rgba(128,128,128,0.2) solid', borderTopLeftRadius: '4px', borderBottomLeftRadius: '4px', color: 'rgba(79, 77, 77, 1)', fontSize: '15px', letterSpacing: '0.5px' }} >URL</button>
+    <button style={{ padding: '8px', background: 'rgba(128,128,128,0.16)', border: '1.5px rgba(128,128,128,0.2) solid', borderTopLeftRadius: '4px', borderBottomLeftRadius: '4px', color: 'rgba(79, 77, 77, 1)', fontSize: '15px', letterSpacing: '0.5px' }} >{inputUrl.length === 0 ? "URL" : isPlaylistId ? "ID" : isInvalidUrl ? "INVALID" : "URL"}</button>
     <input type="url" className='urlInput' name="" id="" style={{ fontSize: '15px', letterSpacing: '0.7px', color: 'rgba(79, 77, 77, 1)', padding: '8px 10px', border: '1px rgba(128,128,128,0.5) solid' }}
-      placeholder='https://www.youtube.com/playlist?list=PLMC9KNkIncKtGvr2kFRuXBVmBev6cAJ2u'
+      placeholder='Enter Playlist ID / URL'
       onChange={(e) => setInputUrl(e.target.value.trim())} spellCheck="false" autoComplete="off"
       value={inputUrl}
     />
     <button className='submit_btn' style={{ padding: '8px', background: 'none', border: '1.5px rgba(222, 10, 10, 1) solid', borderTopRightRadius: '4px', borderBottomRightRadius: '4px', color: 'rgba(222, 10, 10, 1)', fontSize: '15px', letterSpacing: '0.5px', transition: 'all 0.2s' }} onClick={submitHandler}
-      disabled={!inputUrl.includes("youtube.com/playlist?list=") || !inputUrl.split('youtube.com/playlist?list=')[1] || isLoading}
+      disabled={((!isPlaylistId && isInvalidUrl) || isLoading)}
     >Go</button>
 
   </section>
