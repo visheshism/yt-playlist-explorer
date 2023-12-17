@@ -168,7 +168,11 @@ function App() {
                         durationsList.includes(filters.duration)) ||
                       (!!filters.channel &&
                         channelListFromData.includes(filters.channel)))
-                ),
+                ).reduce((acc, cur) => {
+                    const [key, value] = cur
+                    acc[key] = value
+                    return acc
+                  }, {}),
               });
 
               /* equivalent: 
