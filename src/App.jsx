@@ -92,9 +92,7 @@ function App() {
       setPlaylistInfo({});
       setData([]);
       setTotalDuration(0);
-      setSearchParams({
-        [isPlaylistId ? "id" : "url"]: inputUrl,
-      });
+      
       setFilters({
         status: false,
         duration: null,
