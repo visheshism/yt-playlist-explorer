@@ -20,7 +20,7 @@ export const getTimeString = (time) => {
   if (time > 0) {
     let arr = Array.of(renderString(y, 'year'), renderString(mo, 'month'), renderString(d, 'day'), renderString(h, 'hour'), renderString(m, 'minute'), renderString(sec, 'second'))
 
-    return arr.filter(i => !i == '').join(', ')
+    return arr.filter(i => !i == '').join(' ')
   }
 
   return '0 seconds'
