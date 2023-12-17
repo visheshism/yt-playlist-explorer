@@ -108,6 +108,14 @@ body {
     }
 }
 
+@media (max-width: 768px) {
+
+    .wrapper-grid {
+        grid-template-columns: repeat(auto-fill, min(80%, 380px));
+    }
+
+}
+
 @media (min-width: 768px) {
     .container {
         max-width: 720px;
@@ -116,11 +124,9 @@ body {
     section {
         grid-template-columns: 8% 1fr 8% !important;
     }
-    
-    .itemCard {
-        max-width: 50% !important;
-        flex: 0 0 50% !important;
 
+    .wrapper-grid {
+        grid-template-columns: repeat(auto-fill, 50%);
     }
 }
 
@@ -129,8 +135,7 @@ body {
         max-width: 960px;
     }
 
-    .itemCard {
-        max-width: 33.333333% !important;
-        flex: 0 0 33.333333% !important;
+    .wrapper-grid {
+        grid-template-columns: repeat(auto-fill, 33.33%);
     }
 }

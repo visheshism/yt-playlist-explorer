@@ -24,7 +24,7 @@ export const getListItems = async (playlistId, nextPage = '') => {
 
         const response = await Axios.get(url)
         const { data: { nextPageToken, items } } = response
-        const videoItems = items.map(({ snippet: { title, description, position, resourceId: { videoId }, thumbnails: { medium: { url: ImageUrl } = { url: undefined } } } }) => ({ title, description, videoId, position, image: ImageUrl }))
+        const videoItems = items.map(({ snippet: { title, description, position, resourceId: { videoId }, thumbnails: { medium: { url: ImageUrl } = { url: undefined } } } }) => ({ title, ...(description.length > 0 ? { description } : { description: null }), videoId, position, image: ImageUrl }))
 
         return { nextPageToken, items: videoItems }
     } catch (error) {
@@ -33,7 +33,7 @@ export const getListItems = async (playlistId, nextPage = '') => {
 }
 
 
-export const getVideoDuration = async (items) => {
+export const getVideoMetaData = async (items) => {
     const arr = []
     let collection = []
 
@@ -45,18 +45,26 @@ export const getVideoDuration = async (items) => {
     }
 
     for (const chunk of collection) {
-        const url = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&fields=items(id,contentDetails(duration))&key=${API_KEY}&id=${chunk.join(',')}`
+        const url = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&fields=items(id,snippet(channelTitle),contentDetails(duration))&key=${API_KEY}&id=${chunk.join(",")}`
         const response = await Axios.get(url)
         const { data: { items } } = response
         arr.push(...items)
     }
 
-    const finalObj = arr.reduce((final, currentItem) => {
+    const durationsObj = arr.reduce((final, currentItem) => {
         const { id, contentDetails: { duration } = { duration: "" } } = currentItem;
         final[id] = iso8601ToTime(duration);
         return final;
     }, {});
 
+const channelsObj = arr.reduce((final, currentItem) => {
+    const { id, snippet: { channelTitle } = { channelTitle: "" } } = currentItem
 
-    return finalObj
+    final[id] = channelTitle
+
+    // console.log(channelTitle)
+    return final
+  }, {})
+
+    return [durationsObj, channelsObj]
 }
