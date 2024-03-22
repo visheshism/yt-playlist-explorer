@@ -92,12 +92,6 @@ function App() {
       setPlaylistInfo({});
       setData([]);
       setTotalDuration(0);
-      
-      setFilters({
-        status: false,
-        duration: null,
-        channel: null,
-      });
 
       getData(inputUrl);
     }
