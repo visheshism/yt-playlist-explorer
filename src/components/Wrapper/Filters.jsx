@@ -14,7 +14,7 @@ const Filters = ({
 
   useEffect(() => {
     setFilters((prev) => ({
-      status: selectedDuration || selectedDuration ? true : false,
+      status: (selectedChannel || selectedDuration) ? true : false,
       channel: selectedChannel?.length > 0 ? selectedChannel : null,
       duration: selectedDuration?.length > 0 ? selectedDuration : null,
     }));
