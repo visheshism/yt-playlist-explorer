@@ -9,7 +9,7 @@ export const iso8601ToTime = (duration) => {
   return 0
 }
 
-export const dateTimeStringToSec = (dateTimeString) => {
+export const dateTimeStringToSec = (dateTimeString = null) => {
   const dateObject = new Date(dateTimeString)
 
   if (isNaN(dateObject.getTime())) {

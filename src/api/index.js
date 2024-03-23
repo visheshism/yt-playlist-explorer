@@ -20,7 +20,7 @@ export const getPlaylistInfo = async (PlaylistId) => {
 export const getListItems = async (playlistId, nextPage = '') => {
     try {
 
-        const url = `https://www.googleapis.com/youtube/v3/playlistItems?playlistId=${playlistId}&part=snippet,contentDetails&fields=nextPageToken,items(snippet(title,description,thumbnails(medium),position,resourceId(videoId)),contentDetails(videoPublishedAt))&maxResults=50&key=${API_KEY}&pageToken=${nextPage}`
+        const url = `https://www.googleapis.com/youtube/v3/playlistItems?playlistId=${playlistId}&part=snippet,contentDetails&fields=nextPageToken,items(snippet(title,description,publishedAt,thumbnails(medium),position,resourceId(videoId)),contentDetails(videoPublishedAt))&maxResults=50&key=${API_KEY}&pageToken=${nextPage}`
 
         const response = await Axios.get(url)
         const { data: { nextPageToken, items } } = response
