@@ -9,6 +9,17 @@ export const iso8601ToTime = (duration) => {
   return 0
 }
 
+export const dateTimeStringToSec = (dateTimeString) => {
+  const dateObject = new Date(dateTimeString)
+
+  if (isNaN(dateObject.getTime())) {
+    throw new Error(
+      "Invalid date time string format. Please use ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ)."
+    )
+  }
+
+  return Math.floor(dateObject.getTime() / 1000)
+}
 
 export const getTimeString = (time) => {
   const s = time;

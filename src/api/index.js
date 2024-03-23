@@ -1,5 +1,5 @@
 import Axios from "axios"
-import { iso8601ToTime } from "../utils/timeConversion"
+import { dateTimeStringToSec, iso8601ToTime } from "../utils/timeConversion"
 
 const API_KEY = import.meta.env.VITE_API_KEY
 
@@ -20,11 +20,11 @@ export const getPlaylistInfo = async (PlaylistId) => {
 export const getListItems = async (playlistId, nextPage = '') => {
     try {
 
-        const url = `https://www.googleapis.com/youtube/v3/playlistItems?playlistId=${playlistId}&part=snippet&fields=nextPageToken,items(snippet(title,description,thumbnails(medium),position,resourceId(videoId)))&maxResults=50&key=${API_KEY}&pageToken=${nextPage}`
+        const url = `https://www.googleapis.com/youtube/v3/playlistItems?playlistId=${playlistId}&part=snippet,contentDetails&fields=nextPageToken,items(snippet(title,description,thumbnails(medium),position,resourceId(videoId)),contentDetails(videoPublishedAt))&maxResults=50&key=${API_KEY}&pageToken=${nextPage}`
 
         const response = await Axios.get(url)
         const { data: { nextPageToken, items } } = response
-        const videoItems = items.map(({ snippet: { title, description, position, resourceId: { videoId }, thumbnails: { medium: { url: ImageUrl } = { url: undefined } } } }) => ({ title, ...(description.length > 0 ? { description } : { description: null }), videoId, position, image: ImageUrl }))
+        const videoItems = items.map(({ snippet: { title, description, position, publishedAt, resourceId: { videoId }, thumbnails: { medium: { url: ImageUrl } = { url: undefined } } }, contentDetails: { videoPublishedAt = null } }) => ({ title, ...(description.length > 0 ? { description } : { description: null }), videoId, position, image: ImageUrl, videoAdded: dateTimeStringToSec(publishedAt), videoPublishedAt: dateTimeStringToSec(videoPublishedAt) }))
 
         return { nextPageToken, items: videoItems }
     } catch (error) {
@@ -45,7 +45,7 @@ export const getVideoMetaData = async (items) => {
     }
 
     for (const chunk of collection) {
-        const url = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&fields=items(id,snippet(channelTitle),contentDetails(duration))&key=${API_KEY}&id=${chunk.join(",")}`
+        const url = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&fields=items(id,snippet(channelTitle,publishedAt),contentDetails(duration))&key=${API_KEY}&id=${chunk.join(",")}`
         const response = await Axios.get(url)
         const { data: { items } } = response
         arr.push(...items)
@@ -57,14 +57,22 @@ export const getVideoMetaData = async (items) => {
         return final;
     }, {});
 
-const channelsObj = arr.reduce((final, currentItem) => {
-    const { id, snippet: { channelTitle } = { channelTitle: "" } } = currentItem
+    const channelsObj = arr.reduce((final, currentItem) => {
+        const { id, snippet: { channelTitle } = { channelTitle: "" } } = currentItem
 
-    final[id] = channelTitle
+        final[id] = channelTitle
 
-    // console.log(channelTitle)
-    return final
+        return final
+    }, {})
+
+   //   DtTi=DateTime
+   const publishDtTiObj = arr.reduce((final, currentItem) => {
+        const { id, snippet: { publishedAt } = { publishedAt: null } } = currentItem
+
+        final[id] = publishedAt
+
+        return final
   }, {})
 
-    return [durationsObj, channelsObj]
+  return [durationsObj, channelsObj, publishDtTiObj]
 }

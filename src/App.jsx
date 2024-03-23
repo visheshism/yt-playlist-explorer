@@ -31,6 +31,7 @@ function App() {
     status: !!searchParams.get("filters"),
     channel: searchParams.get("channel"),
     duration: searchParams.get("duration"),
+    sort: searchParams.get("sort"),
   });
 
   const [currentItems, setCurrentItems] = useState(data);
@@ -103,7 +104,7 @@ function App() {
         try {
           resolve(
             (async () => {
-              const [durationData, channelsData] = await getVideoMetaData(data);
+              const [durationData, channelsData, publishDtTiObj] = await getVideoMetaData(data);
 
               const updatedData = data.map((item, idx) => ({
                 ...item,
@@ -149,6 +150,16 @@ function App() {
                         durationsList.includes(filters.duration)
                       ) &&
                         a !== "duration")) &&
+                        (!filters.sort ||
+                        (filters.sort &&
+                          sortList.includes(filters.sort.slice(0, -1)) &&
+                          ["+", "-"].includes(filters.sort.slice(-1))) ||
+                        (!(
+                          filters.sort &&
+                          sortList.includes(filters.sort.slice(0, -1)) &&
+                          ["+", "-"].includes(filters.sort.slice(-1))
+                        ) &&
+                          a !== "sort")) &&
                     ((!(
                       !!filters.duration &&
                       durationsList.includes(filters.duration)
@@ -157,11 +168,19 @@ function App() {
                         !!filters.channel &&
                         channelListFromData.includes(filters.channel)
                       ) &&
+                      !(
+                          !!filters.sort &&
+                          sortList.includes(filters.sort.slice(0, -1)) &&
+                          ["+", "-"].includes(filters.sort.slice(-1))
+                        ) &&
                       a !== "filters") ||
                       (!!filters.duration &&
                         durationsList.includes(filters.duration)) ||
                       (!!filters.channel &&
-                        channelListFromData.includes(filters.channel)))
+                        channelListFromData.includes(filters.channel)) ||
+                        (!!filters.sort &&
+                          sortList.includes(filters.sort.slice(0, -1)) &&
+                          ["+", "-"].includes(filters.sort.slice(-1))))
                 ).reduce((acc, cur) => {
                     const [key, value] = cur
                     acc[key] = value
@@ -197,9 +216,21 @@ function App() {
                   !channelListFromData.includes(prev.channel) && {
                     channel: null,
                   }),
+                  ...(prev.sort &&
+                  !(
+                    sortList.includes(prev.sort.slice(0, -1)) &&
+                    ["+", "-"].includes(prev.sort.slice(-1))
+                  ) && {
+                    sort: null,
+                  }),
                 ...(!(prev.duration && durationsList.includes(prev.duration)) &&
                   !(
                     prev.channel && channelListFromData.includes(prev.channel)
+                    ) &&
+                  !(
+                    prev.sort &&
+                    sortList.includes(prev.sort.slice(0, -1)) &&
+                    ["+", "-"].includes(prev.sort.slice(-1))
                   ) && {
                     status: false,
                   }),
@@ -232,6 +263,7 @@ function App() {
     { text: "40 min", value: `gt-${40 * 60}` },
   ];
   const durationsList = durationsObjList.map(({ value }) => value);
+  const sortList = ["Video Added", "Duration", "Video Published"];
 
   useEffect(() => {
     if (state === "error") {
@@ -247,16 +279,42 @@ function App() {
         } else return false;
       };
 
-      setCurrentItems(() => [
+const sortObj = {
+        "Video Added": (a, b) => a.videoAdded - b.videoAdded,
+        Duration: (a, b) => a.duration - b.duration,
+        "Video Published": (a, b) => a.videoPublishedAt - b.videoPublishedAt,
+      };
+
+      setCurrentItems(() => {
+        // Filtered data without sort
+        const filteredWoSort = [
         ...data.filter(
           ({ channel, duration }) =>
             (!filters.channel || channel === filters.channel) &&
             (!filters.duration ||
               returnBoolBasedOnDurationStr(filters.duration, duration))
         ),
-      ]);
+      ];
 
-      isFiltering && setTimeout(() => setIsFiltering(false), 50);
+        const final = filters.sort
+          ? filteredWoSort.sort(
+              (a, b) =>
+                sortObj[filters.sort.slice(0, -1)](a, b) *
+                (filters.sort.slice(-1) === "+" ? 1 : -1)
+            )
+            // equivalent:
+            /* (()=>{ const halfWay = filteredWoSort
+              .sort((a, b) =>
+              sortObj[filters.sort.slice(0, -1)](a, b))
+              return filters.sort.slice(-1) === "-"  ? halfWay.reverse() : halfWay;
+            })()
+            */
+             : filteredWoSort;
+
+        return final;
+      });
+
+      isFiltering && setTimeout(() => setIsFiltering(false), 150);
       setTimeout(() => setShouldRender(true), 51);
       setState("filtered");
     }
@@ -267,13 +325,14 @@ function App() {
 
     if (!isLoading && ["fetched", "filtered"].includes(state)) {
       setShouldRender(false);
-      if (filters.channel || filters.duration) {
+      if (filters.channel || filters.duration || filters.sort) {
         
         setSearchParams({
           [isPlaylistId ? "id" : "url"]: inputUrl,
-          ...((filters.channel || filters.duration) && { filters: true }),
+          ...((filters.channel || filters.duration || filters.sort) && { filters: true }),
           ...(filters.channel && { channel: filters.channel }),
           ...(filters.duration && { duration: filters.duration }),
+          ...(filters.sort && { sort: filters.sort }),
         });
         setIsFiltering(true);
         setState("filtering");
@@ -290,7 +349,7 @@ function App() {
         setTimeout(() => setShouldRender(true), 51);
       }
     }
-  }, [filters.channel, filters.duration]);
+  }, [filters.channel, filters.duration, filters.sort]);
 
   useEffect(() => {
     processRequest();
@@ -355,6 +414,7 @@ function App() {
                 <Filters
                   channelsList={channelsList}
                   durationsList={durationsObjList}
+                  sortList={sortList}
                   setFilters={setFilters}
                   isFiltering={isFiltering}
                   initial={
@@ -363,8 +423,9 @@ function App() {
                       ? {
                           duration: searchParams.get("duration"),
                           channel: searchParams.get("channel"),
+                          sort: searchParams.get("sort"),
                         }
-                      : { duration: null, channel: null }
+                      : { duration: null, channel: null, sort: null }
                   }
                   classes={["anim-default", "filters-wrapper"]}
                 />

@@ -71,6 +71,23 @@ body {
     transition: all 0.2s;
 }
 
+.sortChild {
+    padding: 4px 8px;
+    transition: all 0.2s ease-in-out;
+}
+
+.sortChild:hover {
+    background-color: rgba(80, 80, 80, 0.1);
+}
+
+.sortChild.active {
+    background-color: rgba(105, 104, 104, 0.1);
+}
+
+.sortChild.active:hover {
+    background-color: rgba(105, 104, 104, 0.1);
+}
+
 @keyframes grow {
     0% {
         opacity: 0;
