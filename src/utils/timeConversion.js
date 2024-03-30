@@ -21,6 +21,31 @@ export const dateTimeStringToSec = (dateTimeString = null) => {
   return Math.floor(dateObject.getTime() / 1000)
 }
 
+export const secToDateTimeString = (timestamp = null) => {
+  try {
+    if (timestamp) {
+      const dateObject = new Date(timestamp * 1000);
+      const hour = dateObject.getHours();
+      const minute = dateObject.getMinutes();
+      const second = dateObject.getSeconds();
+      const meridian = hour < 12 ? "AM" : "PM";
+      const formattedHour = hour % 12 || 12; // Convert to 12-hour format (12 for midnight)
+      const day = dateObject.getDate().toString().padStart(2, "0");
+      const month = (dateObject.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-indexed
+      const year = dateObject.getFullYear();
+      return `${formattedHour.toString().padStart(2, "0")}:${minute
+        .toString()
+        .padStart(2, "0")}:${second
+        .toString()
+        .padStart(2, "0")} ${meridian}, ${day}/${month}/${year}`;
+    } else return timestamp;
+  } catch (error) {
+    throw new ValueError(
+      "Invalid timestamp format. Please provide a valid Unix timestamp in seconds."
+    );
+  }
+};
+
 export const getTimeString = (time) => {
   const s = time;
 
