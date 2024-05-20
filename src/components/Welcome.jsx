@@ -14,10 +14,10 @@ const Welcome = () => {
 
 
             <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'sans-serif', }}>
-                <a href="http://github.com/visheshism/Yt-Playlist-Length-Calc" target="_blank" style={{ textDecoration: 'none', fontFamily: 'inherit', color: 'inherit' }}>Source</a>
+                <a href="https://github.com/visheshism/Yt-Playlist-Length-Calculator" target="_blank" style={{ textDecoration: 'none', fontFamily: 'inherit', color: 'inherit' }}>Source</a>
                 <div>
                     Made by&nbsp;
-                    <a href="http://github.com/visheshism" target="_blank" style={{ textDecoration: 'none', fontFamily: 'sans-serif', color: 'inherit' }}>Vishesh Singh</a>.
+                    <a href="https://github.com/visheshism" target="_blank" style={{ textDecoration: 'none', fontFamily: 'sans-serif', color: 'inherit' }}>Vishesh Singh</a>.
                 </div>
             </div>
         </div>
