@@ -11,7 +11,7 @@ const Header = () => {
                 </div>
                 <div style={{ width: '100%' }}>
 
-                    <h3 className='font-Montserrat' style={{ fontSize: '26px', fontWeight: 550, letterSpacing: "1.2px", wordBreak: "break-word", textAlign: 'center' }}>YT Playlist Explorer</h3>
+                    <h3 className='font-Montserrat' style={{ fontSize: '26px', fontWeight: 550, letterSpacing: "1.2px", wordBreak: "break-word", textAlign: 'center' }}>Youtube Playlist Explorer</h3>
                 </div>
 
             </header>
