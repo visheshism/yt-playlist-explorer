@@ -3,7 +3,7 @@
 
 This app helps you to calculate the total duration of a YouTube playlist and provides various tools to explore and analyze the playlist content.
 
-Live at: **[ytpl-len.vercel.app](https://ytpl-len.vercel.app)**
+Live at: **[ytpl-explr.vercel.app](https://ytpl-explr.vercel.app)**
 
 ## Features
 
