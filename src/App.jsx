@@ -61,7 +61,7 @@ function App() {
       setPlaylistInfo(PlaylistInfo);
 
       if (Object.keys(PlaylistInfo).length > 0) {
-        document.title=`${PlaylistInfo.title} - YouTube Playlist Length Calculator`;
+        document.title=`${PlaylistInfo.title} - YouTube Playlist Explorer`;
 
         const playlistData = await getListItems(playListId, nextPage);
 
@@ -94,7 +94,7 @@ function App() {
       setProcessingDuration(false);
       setState("fetching");
 
-      document.title=`YouTube Playlist Length Calculator`;
+      document.title=`YouTube Playlist Explorer`;
       setPlaylistInfo({});
       setData([]);
       setTotalDuration(0);
