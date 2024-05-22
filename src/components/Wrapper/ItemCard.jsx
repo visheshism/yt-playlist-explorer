@@ -1,11 +1,16 @@
+import { useContext, useEffect, useState } from "react";
+import { ctx } from "../../App";
 import { getTimeString, secToDateTimeString } from "../../utils/timeConversion";
-import infoIco from "../../../public/img/info.png";
-import { useEffect, useState } from "react";
+import infoIco from "/itemCard/info.png";
+import moreInfoIco from "/itemCard/moreinfo.png";
 
 const ItemCard = ({
   idx = 0,
-     playlistId, Item: { title, description, duration = 0, videoId, videoAdded,
-        videoPublishedAt, channel = null, image = '/img/not-found.2056c908.png' } }) => {
+  playlistId, Item: { title, description, duration = 0, videoId, videoAdded, videoPublishedAt, channel = null, image = '/itemCard/not-found.2056c908.png', tags, stats = { likeCount: null, viewCount: null, commentCount: null } } }) => {
+
+  const { setModalProps } = useContext(ctx)
+
+  const { likeCount: likes, commentCount: comments, viewCount: views } = stats
 
     return (<article className='itemCard' style={{
         paddingLeft: '15px', paddingRight: '15px', marginTop: '3rem', 
@@ -46,7 +51,23 @@ const ItemCard = ({
             }
             
                 <a href={`https://youtube.com/watch?v=${videoId}&list=${playlistId}`} style={{ padding: '10px', borderRadius: '4px', border: 'none', background: 'rgba(54, 130, 233, 1)', color: 'white', fontFamily: 'sans-serif', letterSpacing: '0.8px', textDecoration: 'none' }} target="__blank">Watch Video</a>
-
+                  
+            {(duration > 0) ? (
+              <MoreInformationToggle
+                showModal={() => {
+                  setModalProps((prev) => ({
+                    ...prev, show: true, data: {
+                      title, description, videoId, stats: {
+                        likes,
+                        comments,
+                        views
+                      }, tags
+                    }
+                  }))
+                }}
+              />) : <></>
+            }
+            
                 </div>
 
             </div>
@@ -139,5 +160,27 @@ const InformationDiv = ({ videoAdded, videoPublished }) => {
       </>
     );
   };
+
+
+const MoreInformationToggle = ({ showModal }) => {
+
+  return (
+    <div
+      style={{ position: "absolute", right: "-40%", top: "-4px" }}
+      onClick={() => showModal()}
+    >
+      <img
+        src={moreInfoIco}
+        alt="moreInfo"
+        style={{
+          width: "25px",
+          height: "25px",
+          margin: "0 10px",
+          cursor: "pointer",
+        }}
+      />
+    </div>
+  );
+};
 
 export default ItemCard
