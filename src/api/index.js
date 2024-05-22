@@ -45,7 +45,7 @@ export const getVideoMetaData = async (items) => {
     }
 
     for (const chunk of collection) {
-        const url = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&fields=items(id,snippet(channelTitle,publishedAt),contentDetails(duration))&key=${API_KEY}&id=${chunk.join(",")}`
+        const url = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet,statistics&fields=items(id,snippet(channelTitle,publishedAt,tags),contentDetails(duration),statistics(viewCount,likeCount,commentCount))&key=${API_KEY}&id=${chunk.join(",")}`
         const response = await Axios.get(url)
         const { data: { items } } = response
         arr.push(...items)
@@ -65,14 +65,30 @@ export const getVideoMetaData = async (items) => {
         return final
     }, {})
 
-   //   DtTi=DateTime
-   const publishDtTiObj = arr.reduce((final, currentItem) => {
+    //   DtTi=DateTime
+    const publishDtTiObj = arr.reduce((final, currentItem) => {
         const { id, snippet: { publishedAt } = { publishedAt: null } } = currentItem
 
         final[id] = publishedAt
 
         return final
-  }, {})
+    }, {})
 
-  return [durationsObj, channelsObj, publishDtTiObj]
+    const statsObj = arr.reduce((final, currentItem) => {
+        const { id, statistics: { likeCount, viewCount, commentCount } = { likeCount: null, viewCount: null, commentCount: null } } = currentItem
+
+        final[id] = { likeCount, viewCount, commentCount }
+
+        return final
+    }, {})
+
+    const tagsObj = arr.reduce((final, currentItem) => {
+        const { id, snippet: { tags } = { tags: [] } } = currentItem
+
+        final[id] = tags
+
+        return final
+    }, {})
+
+return [durationsObj, channelsObj, publishDtTiObj, statsObj,tagsObj]
 }
