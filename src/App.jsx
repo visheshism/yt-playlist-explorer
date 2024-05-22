@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import "./App.css";
 import { getListItems, getPlaylistInfo, getVideoMetaData } from "./api";
 import Header from "./components/Header";
@@ -10,6 +10,8 @@ import TotalDurationComp from "./components/Wrapper/TotalDuration";
 import Loader from "./components/Loader";
 import { useSearchParams } from "react-router-dom";
 import Filters from "./components/Wrapper/Filters";
+import MoreInfoModal from "./components/Wrapper/MoreInfoModal";
+export const ctx = createContext({});
 
 function App() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -107,13 +109,15 @@ function App() {
         try {
           resolve(
             (async () => {
-              const [durationData, channelsData, publishDtTiObj] = await getVideoMetaData(data);
+              const [durationData, channelsData, publishDtTiObj, statsData, tagsData] = await getVideoMetaData(data);
 
               const updatedData = data.map((item, idx) => ({
                 ...item,
                 ide: idx,
                 duration: durationData[item.videoId] ?? 0,
                 channel: channelsData[item.videoId] ?? "",
+                stats: statsData[item.videoId],
+                tags:tagsData[item.videoId]
               }));
 
               setData(() => [...updatedData]);
@@ -355,12 +359,18 @@ const sortObj = {
   }, [filters.channel, filters.duration, filters.sort]);
 
   useEffect(() => {
-    processRequest();
+    processRequest();  
   }, [searchParams.get("id"), searchParams.get("url")]);
 
+  const [modal, setModalProps] = useState({
+    show: false,
+    data: null,
+  });
 
   return (
     <>
+      <ctx.Provider value={{ setModalProps }}>
+        {modal.show && <MoreInfoModal data={modal.data} closeModal={() => setModalProps(() => ({ data:null, show: false }))} />}
       <div
         className="container"
         style={{
@@ -515,6 +525,7 @@ const sortObj = {
           )}
         </main>
       </div>
+      </ctx.Provider>
     </>
   );
 }
