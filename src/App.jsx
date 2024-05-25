@@ -586,6 +586,7 @@ const InputComponent = ({
         spellCheck="false"
         autoComplete="off"
         value={inputUrl}
+        {...(isPlaylistId || !isInvalidUrl) && { onKeyDown: (e) => (e.key === 'Enter' || event.keyCode === 13) && submitHandler() }}
       />
       <button
         className="submit_btn"
