@@ -359,7 +359,9 @@ const sortObj = {
   }, [filters.channel, filters.duration, filters.sort]);
 
   useEffect(() => {
-    processRequest();  
+    if(isPlaylistId || !isInvalidUrl){
+        processRequest();  
+    }
   }, [searchParams.get("id"), searchParams.get("url")]);
 
   const [modal, setModalProps] = useState({
