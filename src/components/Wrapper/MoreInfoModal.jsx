@@ -52,7 +52,6 @@ const MoreInfoModal = ({ data = null, closeModal }) => {
       }}
       onClick={() => {
         setIsOuterClicked(true);
-        console.log(innerForm, innerForm.current);
         if (innerForm?.current?.style) {
           innerForm.current.style.transitionDuration = "0.2s";
           innerForm.current.style.transform = "scale(1.1)";
