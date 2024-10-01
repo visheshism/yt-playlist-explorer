@@ -5,7 +5,7 @@ import {
   secToDateTimeString,
 } from "../../../../../../utils/timeConversion";
 import MoreInformation from "./components/MoreInformation/Index";
-import TimeStamps from "./components/Timestamps/Index";
+import TimeStamps from "./components/TimeStamps/Index";
 
 const ItemCard = ({
   idx = 0,
