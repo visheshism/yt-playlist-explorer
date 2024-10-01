@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import closeIco from "/modal/close.png";
-import likesIco from "/modal/like.png";
-import commentsIco from "/modal/comment.png";
-import viewsIco from "/modal/view.png";
-import dropdownIco from "/modal/dropdown.png";
+import closeIcon from "/modal/close.png";
+import TagsComponent from "./components/Tags/Index";
+import StatComponent from "./components/Stat/Index";
 
 const MoreInfoModal = ({ data = null, closeModal }) => {
   const [opacity, setOpacity] = useState(0);
@@ -51,6 +49,7 @@ const MoreInfoModal = ({ data = null, closeModal }) => {
         justifyContent: "center",
       }}
       onClick={() => {
+        // Zoom into the inner form
         setIsOuterClicked(true);
         if (innerForm?.current?.style) {
           innerForm.current.style.transitionDuration = "0.2s";
@@ -65,6 +64,7 @@ const MoreInfoModal = ({ data = null, closeModal }) => {
         }, 350);
       }}
     >
+      {/* Inner form */}
       <div
         style={{
           position: "relative",
@@ -88,14 +88,14 @@ const MoreInfoModal = ({ data = null, closeModal }) => {
         ref={innerForm}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Close Icon */}
         <span
           style={{ width: "100%", textAlign: "right", paddingBottom: "10px" }}
         >
           <img
             onClick={closeModal}
-            src={closeIco}
+            src={closeIcon}
             alt="close"
-            className="closeIcon"
             style={{
               width: "35px",
               height: "35px",
@@ -108,6 +108,7 @@ const MoreInfoModal = ({ data = null, closeModal }) => {
 
         {data ? (
           <>
+            {/* Detailed Info */}
             {[
               ["Title", title],
               ["Description", description ?? "No description."],
@@ -143,6 +144,7 @@ const MoreInfoModal = ({ data = null, closeModal }) => {
               </div>
             ))}
 
+            {/* Stats of the Video */}
             <div>
               <label
                 style={{
@@ -179,6 +181,8 @@ const MoreInfoModal = ({ data = null, closeModal }) => {
                   ))}
               </div>
             </div>
+
+            {/* Tags of the Video */}
             {tags && <TagsComponent tags={tags} />}
           </>
         ) : (
@@ -202,129 +206,6 @@ const MoreInfoModal = ({ data = null, closeModal }) => {
           </p>
         )}
       </div>
-    </div>
-  );
-};
-
-const StatComponent = ({ type = null, value = null }) => {
-  const imgs = {
-    likes: likesIco,
-    comments: commentsIco,
-    views: viewsIco,
-  };
-
-  if (!type || !value) return null;
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "12px",
-        border: "2px solid wheat",
-        width: "min-content",
-        padding: "6px 6px",
-        borderRadius: "6px",
-        background: "lightyellow",
-      }}
-      title={type[0].toUpperCase() + type.slice(1).toLowerCase()}
-    >
-      <img
-        src={imgs[type]}
-        style={{ height: "30px", width: "30px" }}
-      />
-      <span
-        style={{
-          color: "chocolate",
-          fontWeight: "bold",
-          fontFamily: "Montserrat",
-          letterSpacing: "1.2px",
-          fontSize: "1.1rem",
-        }}
-      >
-        {value}
-      </span>
-    </div>
-  );
-};
-
-const TagsComponent = ({ tags }) => {
-  const [showList, setshowList] = useState(false);
-  const [opacity, setOpacity] = useState(0);
-
-  const tagsRef = useRef(null);
-
-  useEffect(() => {
-    if (showList) {
-      if (tagsRef?.current) {
-        tagsRef.current.scrollIntoView({
-          block: "center",
-          behavior: "smooth",
-        });
-      }
-
-      setTimeout(() => {
-        setOpacity(1);
-      }, 500);
-    } else {
-      setTimeout(() => {
-        setOpacity(0);
-      }, 200);
-    }
-  }, [showList]);
-
-  return (
-    <div>
-      <div
-        style={{ display: "flex", alignItems: "center", gap: "6px" }}
-        ref={tagsRef}
-        onClick={() => setshowList((prev) => !prev)}
-      >
-        <label
-          style={{
-            color: "mediumvioletred",
-            letterSpacing: "0.7px",
-            padding: "4px 0px 0px",
-            fontFamily: "Montserrat",
-            fontWeight: "bold",
-          }}
-          {...(showList && {
-            onClick: (e) => e.stopPropagation(),
-          })}
-        >
-          Tags
-        </label>
-        <img
-          src={dropdownIco}
-          style={{
-            height: "18px",
-            width: "14px",
-            marginTop: "4px",
-            transform: `rotate(${showList ? "0deg" : "-90deg"})`,
-            transition: "all 0.2s ease-in-out",
-          }}
-          title={showList ? "Hide" : "Expand"}
-        />
-      </div>
-
-      {showList && (
-        <ul
-          className="tagsList"
-          style={{
-            opacity,
-            transition: "all 0.4s ease-in-out",
-          }}
-        >
-          {tags.map((tag, idx) => (
-            <li
-              title="Tag"
-              key={tag + idx}
-            >
-              {tag}
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 };

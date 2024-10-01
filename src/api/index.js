@@ -90,5 +90,5 @@ export const getVideoMetaData = async (items) => {
         return final
     }, {})
 
-return [durationsObj, channelsObj, publishDtTiObj, statsObj,tagsObj]
+    return [durationsObj, channelsObj, publishDtTiObj, statsObj, tagsObj]
 }

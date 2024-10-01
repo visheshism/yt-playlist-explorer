@@ -1,9 +1,6 @@
 import React from "react";
 
-const PlaylistInfoComp = ({
-  classes,
-  playlistInfo: { title, description = null },
-}) => {
+const MetaInfo = ({ classes, playlistInfo: { title, description = null } }) => {
   return (
     <div
       className={classes.join(" ")}
@@ -40,4 +37,4 @@ const PlaylistInfoComp = ({
   );
 };
 
-export default PlaylistInfoComp;
+export default MetaInfo;

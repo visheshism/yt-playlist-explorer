@@ -47,6 +47,7 @@ export const secToDateTimeString = (timestamp = null) => {
 };
 
 export const getTimeString = (time) => {
+  // Converts time(in ms) to string form
   const s = time;
 
   const [y, mo, d, h, m, sec] = [s / 31536000 | 0, s / 2592000 % 12 | 0, s / 86400 % 31 | 0, s / 3600 % 24 | 0, s / 60 % 60 | 0, s % 60];
